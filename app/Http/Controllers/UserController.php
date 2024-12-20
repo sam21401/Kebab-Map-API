@@ -91,4 +91,16 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function profile()
+    {
+        $userData = auth()->user();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile Info',
+            'data' => $userData,
+            'id' => auth()->user()->id,
+        ], 200);
+    }
 }
