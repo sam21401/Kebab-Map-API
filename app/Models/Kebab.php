@@ -8,4 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Kebab extends Model
 {
     use HasFactory;
+
+    protected $table = 'kebab';
+
+    protected $fillable = [
+        'name',
+        'logo',
+        'address',
+        'latitude',
+        'longitude',
+        'year_opened',
+        'year_closed',
+        'opening_hours',
+        'meat_types',
+        'sauces',
+        'status',
+        'is_craft',
+        'is_in_stall',
+        'is_chain_member',
+        'ordering_options',
+    ];
+
 }
