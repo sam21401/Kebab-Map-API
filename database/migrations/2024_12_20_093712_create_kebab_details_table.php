@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('kebab_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('kebab_id')->constrained('kebab')->onDelete('cascade');
+            $table->json('opening_hours');
+            $table->json('meat_types');
+            $table->json('sauces');
+            $table->string('status')->nullable();
+            $table->boolean('is_craft')->default(false);
+            $table->boolean('is_in_stall')->default(false);
+            $table->boolean('is_chain_member')->default(false);
+            $table->json('ordering_options');
             $table->timestamps();
         });
     }
