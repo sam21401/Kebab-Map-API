@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('kebab', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('logo')->nullable();
+            $table->string('address');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+            $table->year('year_opened');
+            $table->year('year_closed')->nullable();
             $table->timestamps();
         });
     }
