@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('logo')->nullable();
             $table->string('address');
-            $table->decimal('latitude', 15, 15);
-            $table->decimal('longitude', 15, 15);
+            $table->decimal('latitude', 20, 18);
+            $table->decimal('longitude', 20, 18);
             $table->year('year_opened');
             $table->year('year_closed')->nullable();
             $table->timestamps();
