@@ -114,4 +114,27 @@ class UserController extends Controller
             'data' => []
         ], 200);
     }
+    public function admin (Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if ($user->role !== 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Access denied. Admins only.',
+                ], 403);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Welcome, Admin!',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
 }
