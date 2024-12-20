@@ -103,4 +103,15 @@ class UserController extends Controller
             'id' => auth()->user()->id,
         ], 200);
     }
+
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully Logout',
+            'data' => []
+        ], 200);
+    }
 }
