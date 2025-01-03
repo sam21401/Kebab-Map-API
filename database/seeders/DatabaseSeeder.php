@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@admin.com',
+            'role' => '1',
+            'password' => 'admin',
         ]);
 
         $this->call(KebabSeeder::class);
