@@ -5,19 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Kebab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use
+use App\Models\KebabDetail;
+
 class KebabController extends Controller
 {
     // Show all
     public function showAllKebab()
     {
-        if (Auth::user()->role !== 1) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized access'
-            ], 403);
-        }
-
         $kebabs = Kebab::all();
 
         return response()->json([
@@ -30,13 +24,6 @@ class KebabController extends Controller
     // Show by id
     public function showKebab($id)
     {
-        if (Auth::user()->role !== 1) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized access'
-            ], 403);
-        }
-
         $kebab = Kebab::find($id);
 
         if (!$kebab) {
@@ -165,25 +152,9 @@ class KebabController extends Controller
     }
 
     // SHOW DETAIL ON SPECIFIC KEBAB
-<?php
 
-namespace App\Http\Controllers;
-
-    use App\Models\KebabDetail;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Auth;
-
-class KebabController extends Controller
-{
-    // Show specific kebab details
     public function showKebabDetails($kebabId)
     {
-        if (Auth::user()->role !== 1) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized access'
-            ], 403);
-        }
 
         $kebabDetails = KebabDetail::where('kebab_id', $kebabId)->first();
 
