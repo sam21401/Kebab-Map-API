@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller
 {
@@ -91,7 +91,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-
     public function profile()
     {
         $userData = auth()->user();
@@ -104,6 +103,41 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function getUser($id)
+    {
+        try {
+            $authUser = auth()->user();
+
+            if ($authUser->role !== 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Access denied. Admins only.',
+                ], 403);
+            }
+
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User details retrieved successfully',
+                'data' => $user,
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
     public function logout()
     {
         auth()->user()->tokens()->delete();
@@ -114,6 +148,48 @@ class UserController extends Controller
             'data' => []
         ], 200);
     }
+
+    public function changePassword(Request $request)
+    {
+        try {
+            $validateuser = Validator::make($request->all(), [
+                'current_password' => 'required',
+                'new_password' => 'required|min:6|confirmed',
+            ]);
+
+            if ($validateuser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validateuser->errors(),
+                ], 401);
+            }
+
+            $user = auth()->user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Current password is incorrect.',
+                ], 401);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password changed successfully.',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
     public function admin (Request $request)
     {
         try {

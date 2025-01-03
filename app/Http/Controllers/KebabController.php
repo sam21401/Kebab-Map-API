@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-    use App\Models\Kebab;
-    use Illuminate\Http\Request;
+use App\Models\Kebab;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\KebabDetail;
 
 class KebabController extends Controller
 {
@@ -37,9 +39,17 @@ class KebabController extends Controller
             'data' => $kebab
         ], 200);
     }
+
     // Add new
     public function addKebab(Request $request)
     {
+        if (Auth::user()->role !== 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'logo' => 'nullable|string',
@@ -70,6 +80,13 @@ class KebabController extends Controller
     // Update
     public function updateKebab(Request $request, $id)
     {
+        if (Auth::user()->role !== 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
         $kebab = Kebab::find($id);
 
         if (!$kebab) {
@@ -109,6 +126,13 @@ class KebabController extends Controller
     // Delete
     public function delKebab($id)
     {
+        if (Auth::user()->role !== 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
         $kebab = Kebab::find($id);
 
         if (!$kebab) {
@@ -126,6 +150,24 @@ class KebabController extends Controller
             'data' => null
         ], 200);
     }
+
+    // SHOW DETAIL ON SPECIFIC KEBAB
+    public function showKebabDetails($kebabId)
+    {
+
+        $kebabDetails = KebabDetail::where('kebab_id', $kebabId)->first();
+
+        if (!$kebabDetails) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab details not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab details retrieved successfully',
+            'data' => $kebabDetails
+        ], 200);
+    }
 }
-
-
