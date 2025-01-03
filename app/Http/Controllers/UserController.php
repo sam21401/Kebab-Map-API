@@ -149,6 +149,47 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function changePassword(Request $request)
+    {
+        try {
+            $validateuser = Validator::make($request->all(), [
+                'current_password' => 'required',
+                'new_password' => 'required|min:6|confirmed',
+            ]);
+
+            if ($validateuser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validateuser->errors(),
+                ], 401);
+            }
+
+            $user = auth()->user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Current password is incorrect.',
+                ], 401);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password changed successfully.',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
     public function admin (Request $request)
     {
         try {
