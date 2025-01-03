@@ -152,7 +152,6 @@ class KebabController extends Controller
     }
 
     // SHOW DETAIL ON SPECIFIC KEBAB
-
     public function showKebabDetails($kebabId)
     {
 

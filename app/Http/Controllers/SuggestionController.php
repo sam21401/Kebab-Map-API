@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Suggestion;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 
 class SuggestionController extends Controller
 {
@@ -11,12 +12,12 @@ class SuggestionController extends Controller
     public function addSuggestion(Request $request)
     {
         $request->validate([
-            'content' => 'required|string|max:1000',
+            'subject' => 'required|string|max:1000',
         ]);
 
         $suggestion = Suggestion::create([
             'user_id' => auth()->id(),
-            'content' => $request->content,
+            'subject' => $request->subject,
         ]);
 
         return response()->json([
@@ -75,6 +76,39 @@ class SuggestionController extends Controller
             'status' => true,
             'message' => 'Suggestion marked as reviewed',
             'data' => $suggestion,
+        ], 200);
+    }
+
+    // Delete suggestion
+    public function deleteSuggestion($id)
+    {
+        $user = auth()->user();
+
+        // Check if the authenticated user is an admin
+        if ($user->role !== 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Access denied. Admins only.',
+            ], 403);
+        }
+
+        // Find the suggestion by ID
+        $suggestion = Suggestion::find($id);
+
+        if (!$suggestion) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Suggestion not found',
+            ], 404);
+        }
+
+        // Delete the suggestion
+        $suggestion->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Suggestion deleted successfully',
+            'data' => null,
         ], 200);
     }
 }

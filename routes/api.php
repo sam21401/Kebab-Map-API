@@ -4,6 +4,7 @@ use App\Http\Controllers\KebabController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SuggestionController;
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
@@ -15,9 +16,11 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::get('/logout', [UserController::class, 'logout']);
     Route::get('/admin', [UserController::class, 'admin']);
 
-    Route::post('/suggestions', [SuggestionController::class, 'addSuggestion']);
-    Route::get('/suggestions', [SuggestionController::class, 'getAllSuggestions']);
-    Route::put('/suggestions/{id}/reviewed', [SuggestionController::class, 'markAsReviewed']);
+    Route::post('/suggest/add', [SuggestionController::class, 'addSuggestion']);
+    Route::get('/suggest', [SuggestionController::class, 'getAllSuggestions']);
+    Route::put('/suggest/{id}/reviewed', [SuggestionController::class, 'markAsReviewed']);
+    Route::delete('/suggest/{id}', [SuggestionController::class, 'deleteSuggestion']);
+
 
     Route::get('/kebab/showAll', [KebabController::class, 'showAllKebab']);
     Route::get('/kebab/show/{id}', [KebabController::class, 'showKebab']);

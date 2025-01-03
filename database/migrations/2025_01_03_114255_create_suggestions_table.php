@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('suggestions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->text('content');
+            $table->text('subject');
             $table->boolean('is_reviewed')->default(false);
             $table->timestamps();
         });

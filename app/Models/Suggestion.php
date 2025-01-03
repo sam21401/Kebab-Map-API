@@ -13,7 +13,7 @@ class Suggestion extends Model
 
     protected $fillable = [
         'user_id',
-        'content',
+        'subject',
         'is_reviewed',
     ];
 
