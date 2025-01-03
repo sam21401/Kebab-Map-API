@@ -9,12 +9,12 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
 Route::group(["middleware" => ["auth:sanctum"]], function() {
-  
+
     Route::get('profile', [UserController::class, 'profile']);
     Route::get('logout', [UserController::class, 'logout']);
     Route::get('admin', [UserController::class, 'admin']);
-  
-    Route::get('/showAllKebab/{id}', [KebabController::class, 'showAllKebab']);
+
+    Route::get('/showAllKebab', [KebabController::class, 'showAllKebab']);
     Route::get('/showKebab/{id}', [KebabController::class, 'showKebab']);
     Route::post('/addKebab', [KebabController::class, 'addKebab']);
     Route::put('/updateKebab/{id}', [KebabController::class, 'updateKebab']);
