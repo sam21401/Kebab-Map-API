@@ -104,6 +104,41 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function getUser($id)
+    {
+        try {
+            $authUser = auth()->user();
+
+            if ($authUser->role !== 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Access denied. Admins only.',
+                ], 403);
+            }
+
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User details retrieved successfully',
+                'data' => $user,
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
     public function logout()
     {
         auth()->user()->tokens()->delete();
