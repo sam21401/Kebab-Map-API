@@ -15,6 +15,10 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::get('/logout', [UserController::class, 'logout']);
     Route::get('/admin', [UserController::class, 'admin']);
 
+    Route::post('/suggestions', [SuggestionController::class, 'addSuggestion']);
+    Route::get('/suggestions', [SuggestionController::class, 'getAllSuggestions']);
+    Route::put('/suggestions/{id}/reviewed', [SuggestionController::class, 'markAsReviewed']);
+
     Route::get('/kebab/showAll', [KebabController::class, 'showAllKebab']);
     Route::get('/kebab/show/{id}', [KebabController::class, 'showKebab']);
     Route::post('/kebab/add', [KebabController::class, 'addKebab']);
