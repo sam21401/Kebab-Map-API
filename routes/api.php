@@ -19,6 +19,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::post('/addKebab', [KebabController::class, 'addKebab']);
     Route::put('/updateKebab/{id}', [KebabController::class, 'updateKebab']);
     Route::delete('/delKebab/{id}', [KebabController::class, 'delKebab']);
+    Route::get('/kebab/details/{id}', [KebabController::class, 'showKebabDetails']);
+
 });
 //Route::get('/user', function (Request $request) {return $request->user();})->middleware('auth:sanctum');
 

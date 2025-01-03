@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kebab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use
 class KebabController extends Controller
 {
     // Show all
@@ -161,6 +161,43 @@ class KebabController extends Controller
             'status' => true,
             'message' => 'Kebab deleted successfully',
             'data' => null
+        ], 200);
+    }
+
+    // SHOW DETAIL ON SPECIFIC KEBAB
+<?php
+
+namespace App\Http\Controllers;
+
+    use App\Models\KebabDetail;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
+
+class KebabController extends Controller
+{
+    // Show specific kebab details
+    public function showKebabDetails($kebabId)
+    {
+        if (Auth::user()->role !== 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
+        $kebabDetails = KebabDetail::where('kebab_id', $kebabId)->first();
+
+        if (!$kebabDetails) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab details not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab details retrieved successfully',
+            'data' => $kebabDetails
         ], 200);
     }
 }
