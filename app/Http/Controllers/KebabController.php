@@ -6,6 +6,7 @@ use App\Models\Kebab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\KebabDetail;
+use Illuminate\Support\Facades\DB;
 
 class KebabController extends Controller
 {
@@ -170,4 +171,77 @@ class KebabController extends Controller
             'data' => $kebabDetails
         ], 200);
     }
+
+    public function filterKebab(Request $request)
+    {
+        $query = DB::table('kebab')
+            ->join('kebab_details', 'kebab.id', '=', 'kebab_details.kebab_id')
+            ->select('kebab.*', 'kebab_details.*');
+
+        $array = [
+            'opening_hours' => $request->query('opening_hours', null),
+            'sauces' => $request->query('sauces', null),
+            'meat_types' => $request->query('meat_types', null),
+            'status' => strtoupper($request->query('status', null)),
+            'is_craft' => $request->query('is_craft', null),
+            'is_in_stall' => $request->query('is_in_stall', null),
+            'is_chain_member' => $request->query('is_chain_member', null),
+            'ordering_options' => $request->query('ordering_options', null),
+        ];
+
+        if ($array['opening_hours']) {
+            $hour = $array['opening_hours'];
+
+            $query->where(function ($subQuery) use ($hour) {
+                $subQuery->whereRaw("JSON_EXTRACT(opening_hours, '$.monday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.tuesday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.wednesday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.thursday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.friday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.saturday') LIKE ? OR
+                                  JSON_EXTRACT(opening_hours, '$.sunday') LIKE ?",
+                    [
+                        "%$hour%",
+                        "%$hour%",
+                        "%$hour%",
+                        "%$hour%",
+                        "%$hour%",
+                        "%$hour%",
+                        "%$hour%"
+                    ]);
+            });
+        }
+
+        foreach ($array as $key => $value) {
+            if ($value && $key !== 'opening_hours') {
+                if (in_array($key, ['sauces', 'meat_types', 'ordering_options'])) {
+                    $explodeValue = explode(',', $value);
+                    foreach ($explodeValue as $values) {
+                        $query->whereJsonContains($key, $values);
+                    }
+                } elseif (in_array($key, ['is_craft', 'is_in_stall', 'is_chain_member'])) {
+                    $toBoolean = filter_var($value, FILTER_VALIDATE_BOOL);
+                    $query->where($key, '=', $toBoolean);
+                } else {
+                    $query->where($key, '=', $value);
+                }
+            }
+        }
+
+        $kebabs = $query->get();
+
+        if ($kebabs->isEmpty()) {
+            return response()->json([
+                'message' => 'Not found kebabs with this filters, try again',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebabs filtered successfully',
+            'data' => $kebabs,
+        ]);
+    }
+
+
 }
