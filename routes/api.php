@@ -30,6 +30,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::delete('/kebab/delete/{id}', [KebabController::class, 'delKebab']);
     Route::get('/kebab/details/{id}', [KebabController::class, 'showKebabDetails']);
 
+    //Filters
+    Route::get('kebab/filter',[KebabController::class,'filterKebab']);
+
 });
 //Route::get('/user', function (Request $request) {return $request->user();})->middleware('auth:sanctum');
 
