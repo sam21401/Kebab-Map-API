@@ -6,6 +6,7 @@ use App\Models\Kebab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\KebabDetail;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\DB;
 
 class KebabController extends Controller
@@ -328,6 +329,43 @@ class KebabController extends Controller
             'data' => $kebabs,
         ]);
     }
+
+    public function addToFavorites(Request $request, $kebabId)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
+        $kebab = Kebab::find($kebabId);
+        if (!$kebab) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab not found'
+            ], 404);
+        }
+
+        $favoriteExists = Favorite::where('user_id', Auth::id())->where('kebab_id', $kebabId)->exists();
+        if ($favoriteExists) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab already in favorites'
+            ], 409);
+        }
+
+        Favorite::create([
+            'user_id' => Auth::id(),
+            'kebab_id' => $kebabId,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab added to favorites successfully'
+        ], 201);
+    }
+
 
 
 }
