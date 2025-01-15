@@ -29,4 +29,13 @@ class Kebab extends Model
         'ordering_options',
     ];
 
+    public function suggestions()
+    {
+        return $this->hasMany(Suggestion::class);
+    }
+    public function details()
+    {
+        return $this->hasOne(KebabDetail::class);
+    }
+
 }
