@@ -12,7 +12,7 @@ class KebabDetailFactory extends Factory
     public function definition()
     {
         return [
-            'kebab_id' => \App\Models\Kebab::factory(), // Assuming you have a Kebab model
+            'kebab_id' => \App\Models\Kebab::factory(),
             'opening_hours' => json_encode([
                 'monday' => '10:00-22:00',
                 'tuesday' => '10:00-22:00',
@@ -22,13 +22,13 @@ class KebabDetailFactory extends Factory
                 'saturday' => '10:00-23:00',
                 'sunday' => 'Closed',
             ]),
-            'meat_types' => json_encode(['chicken', 'beef', 'lamb']),
-            'sauces' => json_encode(['garlic', 'spicy', 'yogurt']),
+            'meat_types' => json_encode([$this->faker->word, $this->faker->word, $this->faker->word]),
+            'sauces' => json_encode([$this->faker->word, $this->faker->word]),
             'status' => $this->faker->word(),
             'is_craft' => $this->faker->boolean(),
             'is_in_stall' => $this->faker->boolean(),
             'is_chain_member' => $this->faker->boolean(),
-            'ordering_options' => json_encode(['online', 'in-store']),
+            'ordering_options' => json_encode([$this->faker->word, $this->faker->word]),
         ];
     }
 }

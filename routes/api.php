@@ -30,6 +30,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::put('/kebab/update/{id}', [KebabController::class, 'updateKebab']);
     Route::delete('/kebab/delete/{id}', [KebabController::class, 'delKebab']);
     Route::post('/kebab/{id}/fav', [KebabController::class, 'addToFavorites']);
+    Route::delete('/kebab/{id}/favdelete', [KebabController::class, 'removeFromFavorites']);
 
     //Filters
     Route::get('kebab/filter',[KebabController::class,'filterKebab']);

@@ -366,6 +366,35 @@ class KebabController extends Controller
         ], 201);
     }
 
+    public function removeFromFavorites(Request $request, $kebabId)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
 
+        $userId = Auth::id();
 
+        $favorite = DB::table('favorites')
+            ->where('user_id', $userId)
+            ->where('kebab_id', $kebabId)
+            ->first();
+
+        if (!$favorite) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Favorite not found'
+            ], 404);
+        }
+
+        DB::table('favorites')->where('id', $favorite->id)->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab removed from favorites successfully',
+            'data' => null
+        ], 200);
+    }
 }
