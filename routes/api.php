@@ -35,6 +35,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     //Filters
     Route::get('kebab/filter',[KebabController::class,'filterKebab']);
 
+    //Filters
+    Route::get('kebab/filter',[KebabController::class,'filterKebab']);
+
 });
 //Route::get('/user', function (Request $request) {return $request->user();})->middleware('auth:sanctum');
 

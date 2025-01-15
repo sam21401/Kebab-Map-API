@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\KebabDetail;
 use App\Models\Favorite;
+
 use Illuminate\Support\Facades\DB;
 
 class KebabController extends Controller
