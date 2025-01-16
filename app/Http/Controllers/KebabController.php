@@ -6,6 +6,7 @@ use App\Models\Kebab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\KebabDetail;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\DB;
 
 class KebabController extends Controller
@@ -52,6 +53,7 @@ class KebabController extends Controller
         }
 
         $request->validate([
+            // Fields for kebab table
             'name' => 'required|string|max:255',
             'logo' => 'nullable|string',
             'address' => 'required|string',
@@ -59,6 +61,8 @@ class KebabController extends Controller
             'longitude' => 'required|numeric',
             'year_opened' => 'required|integer',
             'year_closed' => 'nullable|integer',
+
+            // Fields for kebab_details table
             'opening_hours' => 'required|json',
             'meat_types' => 'required|json',
             'sauces' => 'required|json',
@@ -69,14 +73,54 @@ class KebabController extends Controller
             'ordering_options' => 'required|json',
         ]);
 
-        $kebab = Kebab::create($request->all());
+        DB::beginTransaction();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Kebab created successfully',
-            'data' => $kebab
-        ], 201);
+        try {
+            // Insert data into kebab table
+            $kebab = Kebab::create($request->only([
+                'name',
+                'logo',
+                'address',
+                'latitude',
+                'longitude',
+                'year_opened',
+                'year_closed',
+            ]));
+
+            // Insert data into kebab_details table
+            $kebabDetails = KebabDetail::create([
+                'kebab_id' => $kebab->id,
+                'opening_hours' => $request->opening_hours,
+                'meat_types' => $request->meat_types,
+                'sauces' => $request->sauces,
+                'status' => $request->status,
+                'is_craft' => $request->is_craft,
+                'is_in_stall' => $request->is_in_stall,
+                'is_chain_member' => $request->is_chain_member,
+                'ordering_options' => $request->ordering_options,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Kebab created successfully',
+                'data' => [
+                    'kebab' => $kebab,
+                    'kebab_details' => $kebabDetails,
+                ]
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to create kebab',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     // Update
     public function updateKebab(Request $request, $id)
@@ -115,14 +159,57 @@ class KebabController extends Controller
             'ordering_options' => 'sometimes|required|json',
         ]);
 
-        $kebab->update($request->all());
+        DB::beginTransaction();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Kebab updated successfully',
-            'data' => $kebab
-        ], 200);
+        try {
+            // Update kebab table
+            $kebab->update($request->only([
+                'name',
+                'logo',
+                'address',
+                'latitude',
+                'longitude',
+                'year_opened',
+                'year_closed',
+            ]));
+
+            // Update kebab_details table
+            $kebabDetails = KebabDetail::where('kebab_id', $id)->first();
+
+            if ($kebabDetails) {
+                $kebabDetails->update($request->only([
+                    'opening_hours',
+                    'meat_types',
+                    'sauces',
+                    'status',
+                    'is_craft',
+                    'is_in_stall',
+                    'is_chain_member',
+                    'ordering_options',
+                ]));
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Kebab updated successfully',
+                'data' => [
+                    'kebab' => $kebab,
+                    'kebab_details' => $kebabDetails,
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to update kebab',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     // Delete
     public function delKebab($id)
@@ -243,5 +330,71 @@ class KebabController extends Controller
         ]);
     }
 
+    public function addToFavorites(Request $request, $kebabId)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
 
+        $kebab = Kebab::find($kebabId);
+        if (!$kebab) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab not found'
+            ], 404);
+        }
+
+        $favoriteExists = Favorite::where('user_id', Auth::id())->where('kebab_id', $kebabId)->exists();
+        if ($favoriteExists) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kebab already in favorites'
+            ], 409);
+        }
+
+        Favorite::create([
+            'user_id' => Auth::id(),
+            'kebab_id' => $kebabId,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab added to favorites successfully'
+        ], 201);
+    }
+
+    public function removeFromFavorites(Request $request, $kebabId)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ], 403);
+        }
+
+        $userId = Auth::id();
+
+        $favorite = DB::table('favorites')
+            ->where('user_id', $userId)
+            ->where('kebab_id', $kebabId)
+            ->first();
+
+        if (!$favorite) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Favorite not found'
+            ], 404);
+        }
+
+        DB::table('favorites')->where('id', $favorite->id)->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kebab removed from favorites successfully',
+            'data' => null
+        ], 200);
+    }
 }

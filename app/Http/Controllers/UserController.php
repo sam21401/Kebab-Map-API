@@ -42,7 +42,7 @@ class UserController extends Controller
                     'status' => true,
                     'message' => 'User created Succesfully',
                     'token' => $user->createToken('API TOKEN')->plainTextToken
-                ], 200);
+                ], 201);
             } catch (\Throwable $th) {
                 return response()->json([
                     'status' => false,
@@ -79,7 +79,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Succesfully login',
+                'message' => 'Succesfully logged in',
                 'token' => $user->createToken('API TOKEN')->plainTextToken
             ], 200);
 
@@ -188,7 +188,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-
 
     public function admin (Request $request)
     {
