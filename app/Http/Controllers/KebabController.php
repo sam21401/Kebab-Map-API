@@ -9,6 +9,11 @@ use App\Models\KebabDetail;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @group Kebab management
+ *
+ * APIs for managing kebab and kebab details
+ */
 class KebabController extends Controller
 {
     // Show all
