@@ -747,6 +747,20 @@ class KebabController extends Controller
 
         DB::table('favorites')->where('id', $favorite->id)->delete();
 
+        $favorite = DB::table('favorites')
+            ->where('user_id', $userId)
+            ->where('kebab_id', $kebabId)
+            ->first();
+
+        if (!$favorite) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Favorite not found'
+            ], 404);
+        }
+
+        DB::table('favorites')->where('id', $favorite->id)->delete();
+
         return response()->json([
             'status' => true,
             'message' => 'Kebab removed from favorites successfully',

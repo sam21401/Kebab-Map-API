@@ -58,6 +58,13 @@ class UserController extends Controller
             );
 
             if ($validateuser->fails()) {
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User created Succesfully',
+                    'token' => $user->createToken('API TOKEN')->plainTextToken
+                ], 201);
+            } catch (\Throwable $th) {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
