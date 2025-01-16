@@ -14,8 +14,10 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Show all kebabs.'
+      description: |-
+        This endpoint retrieves and displays a list of all kebabs available in the database, including their names,
+        logos, addresses, geographical coordinates (latitude and longitude), and the years they were opened and closed.
       authenticated: false
       custom: []
     headers:
@@ -31,12 +33,40 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"status":true,"message":"List of Kebabs","data":[]}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        content: |-
+          {
+            "status": true,
+            "message": "List of Kebabs",
+            "data": [
+              {
+                "id": 1,
+                "name": "Chicken Kebab",
+                "logo": "http://example.com/logos/chicken-kebab.png",
+                "address": "123 Kebab St, Food Town",
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "year_opened": 2020,
+                "year_closed": null,
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              },
+              {
+                "id": 2,
+                "name": "Beef Kebab",
+                "logo": null,
+                "address": "456 Kebab Rd, Food City",
+                "latitude": 34.0522,
+                "longitude": -118.2437,
+                "year_opened": 2019,
+                "year_closed": null,
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              }
+              // Additional kebabs...
+            ]
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -55,8 +85,12 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Show a kebab by ID.'
+      description: |-
+        This endpoint retrieves and displays the details of a specific kebab by its ID.
+        The details include the kebab's name, logo, address, geographical coordinates
+        (latitude and longitude), and the years it was opened and closed.
+        If the kebab with the specified ID does not exist, an error message is returned.
       authenticated: false
       custom: []
     headers:
@@ -65,16 +99,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the show.'
+        description: 'The ID of the kebab to retrieve.'
         required: true
-        example: aut
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: aut
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -82,13 +116,36 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab details",
+            "data": {
+              "id": 1,
+              "name": "Chicken Kebab",
+              "logo": "http://example.com/logos/chicken-kebab.png",
+              "address": "123 Kebab St, Food Town",
+              "latitude": 40.7128,
+              "longitude": -74.0060,
+              "year_opened": 2020,
+              "year_closed": null,
+              "created_at": "2025-01-16T12:00:00.000000Z",
+              "updated_at": "2025-01-16T12:00:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 404
-        content: '{"status":false,"message":"Kebab not found"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab not found"
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -107,8 +164,13 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Retrieve details of a specific kebab.'
+      description: |-
+        This endpoint retrieves detailed information about a kebab identified by
+        its unique ID. It queries the `kebab_details` table to find the details
+        associated with the specified kebab ID. If the details are found, they
+        are returned in the response. If no details are found for the given kebab
+        ID, an appropriate error message is returned.
       authenticated: false
       custom: []
     headers:
@@ -119,14 +181,25 @@ endpoints:
         name: id
         description: 'The ID of the detail.'
         required: true
-        example: qui
+        example: officia
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
+      kebabId:
+        name: kebabId
+        description: 'The ID of the kebab whose details are to be retrieved.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
     cleanUrlParameters:
-      id: qui
+      id: officia
+      kebabId: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -134,13 +207,27 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab details retrieved successfully",
+            "data": {
+              // Kebab detail fields here (e.g., opening_hours, meat_types, sauces, etc.)
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 404
-        content: '{"status":false,"message":"Kebab details not found"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab details not found"
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -159,15 +246,186 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Add a new kebab along with its details.'
+      description: |-
+        This endpoint allows an admin user to create a new kebab entry, including its basic information
+        and associated details. The request requires authentication and authorization to ensure only admins
+        can perform this action. The function validates the request data, inserts the kebab information
+        into the `kebab` table, and its details into the `kebab_details` table within a database transaction
+        to maintain data integrity. In case of a validation error or any exception during the database operations,
+        appropriate error messages are returned.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      name:
+        name: name
+        description: 'The name of the kebab.'
+        required: true
+        example: '"Delicious Kebab"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      logo:
+        name: logo
+        description: 'optional The logo URL of the kebab.'
+        required: false
+        example: '"http://example.com/logo.png"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'The address of the kebab location.'
+        required: true
+        example: '"123 Kebab St."'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      latitude:
+        name: latitude
+        description: 'The latitude coordinate of the kebab location.'
+        required: true
+        example: 40.7128
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      longitude:
+        name: longitude
+        description: 'The longitude coordinate of the kebab location.'
+        required: true
+        example: -74.006
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      year_opened:
+        name: year_opened
+        description: 'The year the kebab establishment was opened.'
+        required: true
+        example: 2020
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      year_closed:
+        name: year_closed
+        description: 'optional The year the kebab establishment was closed, if applicable.'
+        required: false
+        example: 2022
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      opening_hours:
+        name: opening_hours
+        description: 'json required The opening hours of the kebab in JSON format.'
+        required: false
+        example: '{"Monday": "10:00 - 22:00", "Tuesday": "10:00 - 22:00"}'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meat_types:
+        name: meat_types
+        description: 'json required The types of meat available in JSON format.'
+        required: false
+        example: '["Chicken", "Beef"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sauces:
+        name: sauces
+        description: 'json required The available sauces in JSON format.'
+        required: false
+        example: '["Garlic Sauce", "Hot Sauce"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status of the kebab establishment.'
+        required: false
+        example: '"Open"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_craft:
+        name: is_craft
+        description: 'boolean optional Indicates if the kebab is crafted.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_in_stall:
+        name: is_in_stall
+        description: 'boolean optional Indicates if the kebab is available in a stall.'
+        required: false
+        example: 'false'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_chain_member:
+        name: is_chain_member
+        description: 'boolean optional Indicates if the kebab is a member of a chain.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ordering_options:
+        name: ordering_options
+        description: 'json required The ordering options available in JSON format.'
+        required: false
+        example: '["Takeout", "Dine-in"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      name: '"Delicious Kebab"'
+      logo: '"http://example.com/logo.png"'
+      address: '"123 Kebab St."'
+      latitude: 40.7128
+      longitude: -74.006
+      year_opened: 2020
+      year_closed: 2022
+      opening_hours: '{"Monday": "10:00 - 22:00", "Tuesday": "10:00 - 22:00"}'
+      meat_types: '["Chicken", "Beef"]'
+      sauces: '["Garlic Sauce", "Hot Sauce"]'
+      status: '"Open"'
+      is_craft: 'true'
+      is_in_stall: 'false'
+      is_chain_member: 'true'
+      ordering_options: '["Takeout", "Dine-in"]'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -175,7 +433,7 @@ endpoints:
         name: name
         description: 'Fields for kebab table. Must not be greater than 255 characters.'
         required: true
-        example: pskykzcbavbsqydgkzsl
+        example: nefrqn
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -185,7 +443,7 @@ endpoints:
         name: logo
         description: ''
         required: false
-        example: rerum
+        example: facilis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -195,7 +453,7 @@ endpoints:
         name: address
         description: ''
         required: true
-        example: ut
+        example: facere
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -205,7 +463,7 @@ endpoints:
         name: latitude
         description: ''
         required: true
-        example: 569546955.71666
+        example: 127157.3919
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -215,7 +473,7 @@ endpoints:
         name: longitude
         description: ''
         required: true
-        example: 300081.0
+        example: 489402.0
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -225,7 +483,7 @@ endpoints:
         name: year_opened
         description: ''
         required: true
-        example: 1
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -235,7 +493,7 @@ endpoints:
         name: year_closed
         description: ''
         required: false
-        example: 15
+        example: 14
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -245,7 +503,7 @@ endpoints:
         name: opening_hours
         description: 'Fields for kebab_details table. Must be a valid JSON string.'
         required: true
-        example: '["quo","voluptate"]'
+        example: '["possimus","et"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -255,7 +513,7 @@ endpoints:
         name: meat_types
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["qui","quia"]'
+        example: '["maxime","officiis"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -265,7 +523,7 @@ endpoints:
         name: sauces
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["voluptatem","eveniet"]'
+        example: '["et","debitis"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -275,7 +533,7 @@ endpoints:
         name: status
         description: ''
         required: false
-        example: numquam
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -285,7 +543,7 @@ endpoints:
         name: is_craft
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -295,7 +553,7 @@ endpoints:
         name: is_in_stall
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -305,7 +563,7 @@ endpoints:
         name: is_chain_member
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -315,30 +573,89 @@ endpoints:
         name: ordering_options
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["quisquam","similique"]'
+        example: '["facere","dolore"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      name: pskykzcbavbsqydgkzsl
-      logo: rerum
-      address: ut
-      latitude: 569546955.71666
-      longitude: 300081.0
-      year_opened: 1
-      year_closed: 15
-      opening_hours: '["quo","voluptate"]'
-      meat_types: '["qui","quia"]'
-      sauces: '["voluptatem","eveniet"]'
-      status: numquam
-      is_craft: true
-      is_in_stall: true
-      is_chain_member: true
-      ordering_options: '["quisquam","similique"]'
+      name: nefrqn
+      logo: facilis
+      address: facere
+      latitude: 127157.3919
+      longitude: 489402.0
+      year_opened: 18
+      year_closed: 14
+      opening_hours: '["possimus","et"]'
+      meat_types: '["maxime","officiis"]'
+      sauces: '["et","debitis"]'
+      status: aut
+      is_craft: false
+      is_in_stall: false
+      is_chain_member: false
+      ordering_options: '["facere","dolore"]'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab created successfully",
+            "data": {
+              "kebab": {
+                "id": 1,
+                "name": "Delicious Kebab",
+                "logo": "http://example.com/logo.png",
+                "address": "123 Kebab St.",
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "year_opened": 2020,
+                "year_closed": null,
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              },
+              "kebab_details": {
+                "id": 1,
+                "kebab_id": 1,
+                "opening_hours": {"Monday": "10:00 - 22:00", "Tuesday": "10:00 - 22:00"},
+                "meat_types": ["Chicken", "Beef"],
+                "sauces": ["Garlic Sauce", "Hot Sauce"],
+                "status": "Open",
+                "is_craft": true,
+                "is_in_stall": false,
+                "is_chain_member": true,
+                "ordering_options": ["Takeout", "Dine-in"],
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized access"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Failed to create kebab",
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -356,9 +673,16 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Update an existing kebab and its details.'
+      description: |-
+        This endpoint allows an admin user to update the information of an existing kebab along with its
+        associated details. The request requires authentication and authorization to ensure only admins
+        can perform this action. The function first checks if the kebab with the given ID exists. If it does,
+        it validates the incoming data, updates the kebab information in the `kebab` table, and updates its
+        details in the `kebab_details` table within a database transaction to maintain data integrity.
+        In case of a validation error or any exception during the database operations, appropriate error
+        messages are returned.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -366,16 +690,181 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the update.'
+        description: 'The ID of the kebab to update.'
         required: true
-        example: voluptas
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      name:
+        name: name
+        description: 'optional The name of the kebab.'
+        required: false
+        example: '"Updated Kebab"'
         type: string
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      logo:
+        name: logo
+        description: 'optional The logo URL of the kebab.'
+        required: false
+        example: '"http://example.com/updated_logo.png"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'optional The address of the kebab location.'
+        required: false
+        example: '"456 Updated Kebab St."'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      latitude:
+        name: latitude
+        description: 'optional The latitude coordinate of the kebab location.'
+        required: false
+        example: 40.7129
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      longitude:
+        name: longitude
+        description: 'optional The longitude coordinate of the kebab location.'
+        required: false
+        example: -74.0061
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      year_opened:
+        name: year_opened
+        description: 'optional The year the kebab establishment was opened.'
+        required: false
+        example: 2021
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      year_closed:
+        name: year_closed
+        description: 'optional The year the kebab establishment was closed, if applicable.'
+        required: false
+        example: 2023
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      opening_hours:
+        name: opening_hours
+        description: 'json optional The opening hours of the kebab in JSON format.'
+        required: false
+        example: '{"Monday": "11:00 - 21:00"}'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meat_types:
+        name: meat_types
+        description: 'json optional The types of meat available in JSON format.'
+        required: false
+        example: '["Lamb", "Beef"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sauces:
+        name: sauces
+        description: 'json optional The available sauces in JSON format.'
+        required: false
+        example: '["Tzatziki", "Chili Sauce"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status of the kebab establishment.'
+        required: false
+        example: '"Open"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_craft:
+        name: is_craft
+        description: 'boolean optional Indicates if the kebab is crafted.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_in_stall:
+        name: is_in_stall
+        description: 'boolean optional Indicates if the kebab is available in a stall.'
+        required: false
+        example: 'false'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_chain_member:
+        name: is_chain_member
+        description: 'boolean optional Indicates if the kebab is a member of a chain.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ordering_options:
+        name: ordering_options
+        description: 'json optional The ordering options available in JSON format.'
+        required: false
+        example: '["Takeout", "Delivery"]'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: voluptas
+      id: 1
+      name: '"Updated Kebab"'
+      logo: '"http://example.com/updated_logo.png"'
+      address: '"456 Updated Kebab St."'
+      latitude: 40.7129
+      longitude: -74.0061
+      year_opened: 2021
+      year_closed: 2023
+      opening_hours: '{"Monday": "11:00 - 21:00"}'
+      meat_types: '["Lamb", "Beef"]'
+      sauces: '["Tzatziki", "Chili Sauce"]'
+      status: '"Open"'
+      is_craft: 'true'
+      is_in_stall: 'false'
+      is_chain_member: 'true'
+      ordering_options: '["Takeout", "Delivery"]'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -383,7 +872,7 @@ endpoints:
         name: name
         description: 'Must not be greater than 255 characters.'
         required: true
-        example: fkizjoqgonyt
+        example: zlnmnufaczajjdwa
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -393,7 +882,7 @@ endpoints:
         name: logo
         description: ''
         required: false
-        example: sint
+        example: ullam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -403,7 +892,7 @@ endpoints:
         name: address
         description: ''
         required: true
-        example: temporibus
+        example: harum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -413,7 +902,7 @@ endpoints:
         name: latitude
         description: ''
         required: true
-        example: 1913841.8
+        example: 1.18417555
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -423,7 +912,7 @@ endpoints:
         name: longitude
         description: ''
         required: true
-        example: 55548.2
+        example: 24.11
         type: number
         enumValues: []
         exampleWasSpecified: false
@@ -433,7 +922,7 @@ endpoints:
         name: year_opened
         description: ''
         required: true
-        example: 17
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -443,7 +932,7 @@ endpoints:
         name: year_closed
         description: ''
         required: false
-        example: 13
+        example: 20
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -453,7 +942,7 @@ endpoints:
         name: opening_hours
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["est","quis"]'
+        example: '["aut","numquam"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -463,7 +952,7 @@ endpoints:
         name: meat_types
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["autem","eveniet"]'
+        example: '["est","tenetur"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -473,7 +962,7 @@ endpoints:
         name: sauces
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["ea","aut"]'
+        example: '["dolorum","neque"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -483,7 +972,7 @@ endpoints:
         name: status
         description: ''
         required: false
-        example: consectetur
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -503,7 +992,7 @@ endpoints:
         name: is_in_stall
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -513,7 +1002,7 @@ endpoints:
         name: is_chain_member
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -523,30 +1012,99 @@ endpoints:
         name: ordering_options
         description: 'Must be a valid JSON string.'
         required: true
-        example: '["provident","similique"]'
+        example: '["dolores","odio"]'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      name: fkizjoqgonyt
-      logo: sint
-      address: temporibus
-      latitude: 1913841.8
-      longitude: 55548.2
-      year_opened: 17
-      year_closed: 13
-      opening_hours: '["est","quis"]'
-      meat_types: '["autem","eveniet"]'
-      sauces: '["ea","aut"]'
-      status: consectetur
+      name: zlnmnufaczajjdwa
+      logo: ullam
+      address: harum
+      latitude: 1.18417555
+      longitude: 24.11
+      year_opened: 4
+      year_closed: 20
+      opening_hours: '["aut","numquam"]'
+      meat_types: '["est","tenetur"]'
+      sauces: '["dolorum","neque"]'
+      status: quia
       is_craft: false
-      is_in_stall: true
-      is_chain_member: false
-      ordering_options: '["provident","similique"]'
+      is_in_stall: false
+      is_chain_member: true
+      ordering_options: '["dolores","odio"]'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab updated successfully",
+            "data": {
+              "kebab": {
+                "id": 1,
+                "name": "Updated Kebab",
+                "logo": "http://example.com/updated_logo.png",
+                "address": "456 Updated Kebab St.",
+                "latitude": 40.7129,
+                "longitude": -74.0061,
+                "year_opened": 2021,
+                "year_closed": null,
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              },
+              "kebab_details": {
+                "id": 1,
+                "kebab_id": 1,
+                "opening_hours": {"Monday": "11:00 - 21:00"},
+                "meat_types": ["Lamb", "Beef"],
+                "sauces": ["Tzatziki", "Chili Sauce"],
+                "status": "Open",
+                "is_craft": true,
+                "is_in_stall": false,
+                "is_chain_member": true,
+                "ordering_options": ["Takeout", "Delivery"],
+                "created_at": "2025-01-16T12:00:00.000000Z",
+                "updated_at": "2025-01-16T12:00:00.000000Z"
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized access"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Failed to update kebab",
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -564,9 +1122,16 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Delete an existing kebab.'
+      description: |-
+        This endpoint allows an admin user to delete a kebab from the system.
+        The request requires authentication and authorization to ensure that only
+        admins can perform this action. The function first checks if the kebab
+        with the given ID exists. If it does, it proceeds to delete the kebab from
+        the `kebab` table. If the kebab is successfully deleted, a confirmation
+        message is returned. In case of an unauthorized access attempt or if the
+        kebab is not found, appropriate error messages are returned.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -574,22 +1139,53 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the delete.'
+        description: 'The ID of the kebab to delete.'
         required: true
-        example: ea
-        type: string
+        example: 1
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: ea
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab deleted successfully",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized access"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab not found"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -607,9 +1203,11 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: "Add a kebab to the user's favorites."
+      description: |-
+        This endpoint allows authenticated users to add a specified kebab to their favorites.
+        If the kebab is already in the user's favorites, an appropriate message is returned.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -619,20 +1217,60 @@ endpoints:
         name: id
         description: 'The ID of the kebab.'
         required: true
-        example: 12
-        type: integer
+        example: soluta
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 12
+      id: soluta
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab added to favorites successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized access"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 409
+        content: |-
+          {
+            "status": false,
+            "message": "Kebab already in favorites"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -650,9 +1288,11 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: "Remove a kebab from the user's favorites."
+      description: |-
+        This endpoint allows authenticated users to remove a specified kebab from their favorites.
+        If the kebab is not found in the user's favorites, an appropriate message is returned.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -662,20 +1302,51 @@ endpoints:
         name: id
         description: 'The ID of the kebab.'
         required: true
-        example: 16
-        type: integer
+        example: velit
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: velit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebab removed from favorites successfully",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized access"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "status": false,
+            "message": "Favorite not found"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -693,8 +1364,13 @@ endpoints:
         APIs for managing kebab and kebab details
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Filter kebabs based on various criteria.'
+      description: |-
+        This endpoint allows users to filter kebabs based on specified criteria,
+        including opening hours, sauces, meat types, status, and other attributes.
+        The function constructs a query to retrieve kebabs from the database that
+        match the provided filters. If no kebabs are found matching the criteria,
+        an appropriate message is returned.
       authenticated: false
       custom: []
     headers:
@@ -702,20 +1378,121 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      opening_hours:
+        name: opening_hours
+        description: 'optional The opening hours to filter kebabs.'
+        required: false
+        example: '"10:00"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sauces:
+        name: sauces
+        description: 'optional A comma-separated list of sauces to filter kebabs.'
+        required: false
+        example: '"ketchup,mustard"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meat_types:
+        name: meat_types
+        description: 'optional A comma-separated list of meat types to filter kebabs.'
+        required: false
+        example: '"beef,chicken"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status of the kebabs (e.g., "OPEN", "CLOSED").'
+        required: false
+        example: '"OPEN"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_craft:
+        name: is_craft
+        description: 'optional Filter for craft kebabs.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_in_stall:
+        name: is_in_stall
+        description: 'optional Filter for kebabs that are in a stall.'
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_chain_member:
+        name: is_chain_member
+        description: 'optional Filter for kebabs that are chain members.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ordering_options:
+        name: ordering_options
+        description: 'optional A comma-separated list of ordering options.'
+        required: false
+        example: '"takeout,dine-in"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      opening_hours: '"10:00"'
+      sauces: '"ketchup,mustard"'
+      meat_types: '"beef,chicken"'
+      status: '"OPEN"'
+      is_craft: true
+      is_in_stall: false
+      is_chain_member: true
+      ordering_options: '"takeout,dine-in"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Kebabs filtered successfully",
+            "data": [
+              // Array of filtered kebab objects
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Not found kebabs with this filters, try again"
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []

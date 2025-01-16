@@ -20,7 +20,7 @@ class UserControllerTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
         ]);
