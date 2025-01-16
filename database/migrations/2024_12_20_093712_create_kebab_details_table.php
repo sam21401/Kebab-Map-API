@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kebab_id')->constrained('kebab')->onDelete('cascade');
             $table->json('opening_hours');
-            $table->json('meat_types');
-            $table->json('sauces');
+            $table->json('meat_types')->nullable();
+            $table->json('sauces')->nullable();
             $table->string('status')->nullable();
             $table->boolean('is_craft')->default(false);
             $table->boolean('is_in_stall')->default(false);

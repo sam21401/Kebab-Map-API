@@ -9,6 +9,10 @@ use App\Http\Controllers\SuggestionController;
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
+Route::get('/kebab/showAll', [KebabController::class, 'showAllKebab']);
+Route::get('/kebab/show/{id}', [KebabController::class, 'showKebab']);
+Route::get('/kebab/details/{id}', [KebabController::class, 'showKebabDetails']);
+
 Route::group(["middleware" => ["auth:sanctum"]], function() {
 
     Route::get('/profile', [UserController::class, 'profile']);
@@ -22,13 +26,14 @@ Route::group(["middleware" => ["auth:sanctum"]], function() {
     Route::put('/suggest/{id}/reviewed', [SuggestionController::class, 'markAsReviewed']);
     Route::delete('/suggest/{id}', [SuggestionController::class, 'deleteSuggestion']);
 
-
-    Route::get('/kebab/showAll', [KebabController::class, 'showAllKebab']);
-    Route::get('/kebab/show/{id}', [KebabController::class, 'showKebab']);
     Route::post('/kebab/add', [KebabController::class, 'addKebab']);
     Route::put('/kebab/update/{id}', [KebabController::class, 'updateKebab']);
     Route::delete('/kebab/delete/{id}', [KebabController::class, 'delKebab']);
-    Route::get('/kebab/details/{id}', [KebabController::class, 'showKebabDetails']);
+    Route::post('/kebab/{id}/fav', [KebabController::class, 'addToFavorites']);
+    Route::delete('/kebab/{id}/favdelete', [KebabController::class, 'removeFromFavorites']);
+
+    //Filters
+    Route::get('kebab/filter',[KebabController::class,'filterKebab']);
 
     //Filters
     Route::get('kebab/filter',[KebabController::class,'filterKebab']);

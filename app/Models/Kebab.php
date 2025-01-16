@@ -33,5 +33,9 @@ class Kebab extends Model
     {
         return $this->hasMany(Suggestion::class);
     }
+    public function details()
+    {
+        return $this->hasOne(KebabDetail::class);
+    }
 
 }
