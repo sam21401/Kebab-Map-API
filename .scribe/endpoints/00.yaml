@@ -1,17 +1,24 @@
-name: Endpoints
-description: ''
+name: 'User management'
+description: |-
+
+  APIs for managing users
 endpoints:
   -
     httpMethods:
       - POST
     uri: api/register
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Register a new user.'
+      description: |-
+        This endpoint allows a user to create an account by providing their name, email, and password.
+        A unique email address is required for registration. Upon successful registration, the user
+        will receive an authentication token for further API interactions.
       authenticated: false
       custom: []
     headers:
@@ -21,10 +28,78 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the user.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'A unique email address for the user.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'The password for the account.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: 'John Doe'
+      email: john.doe@example.com
+      password: password123
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "User created successfully",
+            "token": "some-jwt-token"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "status": false,
+            "message": "validation error",
+            "errors": {
+              "email": ["The email has already been taken."],
+              "password": ["The password field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Internal server error message"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -36,12 +111,16 @@ endpoints:
       - POST
     uri: api/login
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Log in a user.'
+      description: |-
+        This endpoint allows a user to authenticate by providing their email and password.
+        If the credentials are valid, an authentication token will be returned for further API interactions.
       authenticated: false
       custom: []
     headers:
@@ -51,10 +130,77 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'The email address of the user.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'The password for the account.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      email: john.doe@example.com
+      password: password123
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Successfully logged in",
+            "token": "some-jwt-token"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "status": false,
+            "message": "Validation error",
+            "errors": {
+              "email": ["The email field is required."],
+              "password": ["The password field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "status": false,
+            "message": "Something went really wrong!"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Internal server error message"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -66,13 +212,17 @@ endpoints:
       - GET
     uri: api/profile
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: "Retrieve authenticated user's profile."
+      description: |-
+        This endpoint retrieves the profile information of the currently authenticated user.
+        The user must be logged in to access this endpoint.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -86,13 +236,32 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Profile Info",
+            "data": {
+              "id": 1,
+              "name": "John Doe",
+              "email": "john.doe@example.com",
+              "created_at": "2025-01-01T12:00:00.000000Z",
+              "updated_at": "2025-01-15T12:00:00.000000Z"
+            },
+            "id": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized."
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -105,13 +274,17 @@ endpoints:
       - GET
     uri: 'api/user/{id}'
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Retrieve user details by ID.'
+      description: |-
+        This endpoint retrieves the details of a user specified by their ID.
+        Only admins are authorized to use this endpoint.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -119,16 +292,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the user.'
+        description: 'The ID of the user to retrieve.'
         required: true
-        example: et
-        type: string
+        example: 5
+        type: integer
         enumValues: []
-        exampleWasSpecified: false
+        exampleWasSpecified: true
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: et
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -136,13 +309,52 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "User details retrieved successfully",
+            "data": {
+              "id": 5,
+              "name": "Jane Doe",
+              "email": "jane.doe@example.com",
+              "role": 2,
+              "created_at": "2025-01-01T12:00:00.000000Z",
+              "updated_at": "2025-01-15T12:00:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Access denied. Admins only."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "status": false,
+            "message": "User not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Internal server error message"
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -155,13 +367,17 @@ endpoints:
       - GET
     uri: api/logout
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Log out the authenticated user.'
+      description: |-
+        This endpoint logs out the currently authenticated user by revoking all their active tokens.
+        The user must be logged in to perform this action.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -175,13 +391,25 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Successfully Logout",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        content: |-
+          {
+            "status": false,
+            "message": "Unauthorized."
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -194,13 +422,17 @@ endpoints:
       - POST
     uri: api/change-password
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: "Change the authenticated user's password."
+      description: |-
+        This endpoint allows the currently authenticated user to change their password.
+        The user must provide their current password for verification and a new password.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -209,10 +441,87 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      current_password:
+        name: current_password
+        description: "The user's current password."
+        required: true
+        example: oldpassword123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      new_password:
+        name: new_password
+        description: 'The new password. Must be at least 6 characters long and confirmed.'
+        required: true
+        example: newpassword123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      new_password_confirmation:
+        name: new_password_confirmation
+        description: 'Confirmation of the new password.'
+        required: true
+        example: newpassword123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      current_password: oldpassword123
+      new_password: newpassword123
+      new_password_confirmation: newpassword123
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Password changed successfully."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "status": false,
+            "message": "Validation error",
+            "errors": {
+              "current_password": ["The current password field is required."],
+              "new_password": ["The new password must be at least 6 characters."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "status": false,
+            "message": "Current password is incorrect."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Internal server error message"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -224,13 +533,18 @@ endpoints:
       - GET
     uri: api/admin
     metadata:
-      groupName: Endpoints
-      groupDescription: ''
+      groupName: 'User management'
+      groupDescription: |-
+
+        APIs for managing users
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
+      title: 'Access a protected admin area.'
+      description: |-
+        This endpoint checks if the authenticated user has admin privileges.
+        It is designed for testing and demonstration purposes, ensuring that
+        only users with the admin role can access this endpoint.
+      authenticated: true
       custom: []
     headers:
       Content-Type: application/json
@@ -244,756 +558,34 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "message": "Welcome, Admin!"
+          }
+        headers: []
+        description: ''
         custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/suggest/add
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      subject:
-        name: subject
-        description: 'Must not be greater than 1000 characters.'
-        required: true
-        example: eayaqkbitnsivnkjyfriamoq
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      subject: eayaqkbitnsivnkjyfriamoq
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/suggest
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "Access denied. Admins only."
+          }
+        headers: []
+        description: ''
         custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-    uri: 'api/suggest/{id}/reviewed'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the suggest.'
-        required: true
-        example: explicabo
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: explicabo
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/suggest/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the suggest.'
-        required: true
-        example: et
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: et
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/kebab/showAll
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/kebab/show/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the show.'
-        required: true
-        example: eos
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: eos
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/kebab/add
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: wwwgdofwhlocdcdjwfygimh
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      logo:
-        name: logo
+        status: 500
+        content: |-
+          {
+            "status": false,
+            "message": "Internal server error message"
+          }
+        headers: []
         description: ''
-        required: false
-        example: rerum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      address:
-        name: address
-        description: ''
-        required: true
-        example: voluptatem
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      latitude:
-        name: latitude
-        description: ''
-        required: true
-        example: 1982.0
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      longitude:
-        name: longitude
-        description: ''
-        required: true
-        example: 96309.374504
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      year_opened:
-        name: year_opened
-        description: ''
-        required: true
-        example: 13
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      year_closed:
-        name: year_closed
-        description: ''
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      opening_hours:
-        name: opening_hours
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["quas","ut"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      meat_types:
-        name: meat_types
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["nostrum","reiciendis"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sauces:
-        name: sauces
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["id","dignissimos"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      status:
-        name: status
-        description: ''
-        required: false
-        example: quaerat
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      is_craft:
-        name: is_craft
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_in_stall:
-        name: is_in_stall
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_chain_member:
-        name: is_chain_member
-        description: ''
-        required: false
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      ordering_options:
-        name: ordering_options
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["ea","laboriosam"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      name: wwwgdofwhlocdcdjwfygimh
-      logo: rerum
-      address: voluptatem
-      latitude: 1982.0
-      longitude: 96309.374504
-      year_opened: 13
-      year_closed: 1
-      opening_hours: '["quas","ut"]'
-      meat_types: '["nostrum","reiciendis"]'
-      sauces: '["id","dignissimos"]'
-      status: quaerat
-      is_craft: true
-      is_in_stall: true
-      is_chain_member: false
-      ordering_options: '["ea","laboriosam"]'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-    uri: 'api/kebab/update/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: modi
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: modi
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: fdayzjtzgyzjsaylneb
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      logo:
-        name: logo
-        description: ''
-        required: false
-        example: repellat
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      address:
-        name: address
-        description: ''
-        required: true
-        example: occaecati
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      latitude:
-        name: latitude
-        description: ''
-        required: true
-        example: 8435219.78
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      longitude:
-        name: longitude
-        description: ''
-        required: true
-        example: 7.626
-        type: number
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      year_opened:
-        name: year_opened
-        description: ''
-        required: true
-        example: 2
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      year_closed:
-        name: year_closed
-        description: ''
-        required: false
-        example: 7
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      opening_hours:
-        name: opening_hours
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["repellat","nemo"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      meat_types:
-        name: meat_types
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["placeat","et"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sauces:
-        name: sauces
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["totam","explicabo"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      status:
-        name: status
-        description: ''
-        required: false
-        example: est
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      is_craft:
-        name: is_craft
-        description: ''
-        required: false
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_in_stall:
-        name: is_in_stall
-        description: ''
-        required: false
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_chain_member:
-        name: is_chain_member
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      ordering_options:
-        name: ordering_options
-        description: 'Must be a valid JSON string.'
-        required: true
-        example: '["omnis","itaque"]'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      name: fdayzjtzgyzjsaylneb
-      logo: repellat
-      address: occaecati
-      latitude: 8435219.78
-      longitude: 7.626
-      year_opened: 2
-      year_closed: 7
-      opening_hours: '["repellat","nemo"]'
-      meat_types: '["placeat","et"]'
-      sauces: '["totam","explicabo"]'
-      status: est
-      is_craft: false
-      is_in_stall: false
-      is_chain_member: true
-      ordering_options: '["omnis","itaque"]'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/kebab/delete/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the delete.'
-        required: true
-        example: est
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: est
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/kebab/details/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the detail.'
-        required: true
-        example: porro
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: porro
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
         custom: []
     responseFields: []
     auth: []
